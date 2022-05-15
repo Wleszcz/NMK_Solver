@@ -81,8 +81,9 @@ int main() {
         }
 
 
-        for (int i = 0; i < m; i++)
+        for (int i = 0; i < m; i++){
             delete[] board[i];
+        }
 
 
         delete[] board;
@@ -102,26 +103,10 @@ void printAllMoves(int **board, int m, int n, int k, int p, bool b) {
         return;
     }
 
-    List* moves = generateAllMoves( board,m, n, p,k, false);
+    List* moves = generateAllMoves( board,m, n, p,k, b);
 
     moves_Amount=moves->size();
-    if (b) {
-        for (int i = 0; i < moves->size(); i++) {
-            int x = moves->get_element(i).x;
-            int y = moves->get_element(i).y;
-            board[y][x] = p;
-            if (whoWon(board, m, n, k) == p) {
-                printf("1\n");
-                printBoard(board, m, n);
-                victory = true;
-                moves->free_memory();
-                return;
-            }
-            board[y][x] = EMPTY;
-        }
-    }
 
-    if (!victory) {
         printf("%d\n",moves->size());
 
         for (int i = 0; i < moves->size(); ++i) {
@@ -131,8 +116,8 @@ void printAllMoves(int **board, int m, int n, int k, int p, bool b) {
             printBoard(board,m,n);
             board[y][x]=EMPTY;
         }
-    }
     moves->free_memory();
+    delete moves;
 }
 
 int getOponent(int player) {
@@ -175,11 +160,15 @@ int Minimax(int initialPlayer,int** board,int m,int n,int k,int player){
             }
             board[y][x]=EMPTY;
             if(best==1){
+                moves->free_memory();
+                delete moves;
                 return 1;
             }
 
         }
         moves->free_memory();
+        delete moves;
+
         return best;
 
     }
@@ -194,11 +183,15 @@ int Minimax(int initialPlayer,int** board,int m,int n,int k,int player){
             }
             board[y][x]=EMPTY;
             if(worst==-1){
+                moves->free_memory();
+                delete moves;
+
                 return -1;
             }
 
         }
         moves->free_memory();
+        delete moves;
         return worst;
 
     }
@@ -232,6 +225,10 @@ List* generateAllMoves(int ** board,int m,int n,int p,int k,bool cut){
                     if(whoWon(board,m,n,k)!=0){
                         List* Fmove=new List;
                         Fmove->addLast(move);
+
+                        moves->free_memory();
+                        delete moves;
+
                         return Fmove;
                     }
                     board[move.y][move.x]=EMPTY;

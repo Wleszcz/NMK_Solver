@@ -5,8 +5,6 @@ using namespace std;
 #include "List.h"
 
 List::List() {
-    head = new List_element_t;
-    tail = new List_element_t;
     head = NULL;
     tail = NULL;
 };
@@ -65,16 +63,15 @@ Position_t List::get_element(int number) {
 }
 
 void List::free_memory() {
-        List_element_t* tmp;
+    List_element_t* tmp = head;
+    List_element_t* tmp2;
 
-
-        while (head!= NULL)
-        {
-            tmp = head;
-            head = head->next;
-            delete tmp;
-        }
-
+    while (tmp != NULL)
+    {
+        tmp2 = tmp->next;
+        delete tmp;
+        tmp = tmp2;
+    }
 }
 
 int List::size(){

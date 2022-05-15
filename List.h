@@ -17,7 +17,6 @@ struct Position_t{
 };
 
 struct List_element_t {
-     ;
     Position_t position;
     List_element_t* next;
     List_element_t* previous;
