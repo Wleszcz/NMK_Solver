@@ -22,7 +22,7 @@ int checkDiagonalToTheRight(int **board, int m, int n, int k);
 
 int checkDiagonalToTheLeft(int **board, int m, int n, int k);
 
-List* generateAllMoves(int ** board,int m,int n,int p);
+List* generateAllMoves(int ** board,int m,int n,int p,int k,bool cut);
 bool isFull(int ** board,int m,int n);
 
 int Minimax(int initialPlayer,int** board,int m,int n,int k,int player);
@@ -102,7 +102,7 @@ void printAllMoves(int **board, int m, int n, int k, int p, bool b) {
         return;
     }
 
-    List* moves = generateAllMoves( board,m, n, p);
+    List* moves = generateAllMoves( board,m, n, p,k, false);
 
     moves_Amount=moves->size();
     if (b) {
@@ -157,7 +157,7 @@ int Minimax(int initialPlayer,int** board,int m,int n,int k,int player){
         return 0;
     }
 
-    List* moves = generateAllMoves(board,m,n,player);
+    List* moves = generateAllMoves(board,m,n,player,k,true);
 
     int best=-2;
     int worst=2;
@@ -174,6 +174,10 @@ int Minimax(int initialPlayer,int** board,int m,int n,int k,int player){
                 best=score;
             }
             board[y][x]=EMPTY;
+            if(best==1){
+                return 1;
+            }
+
         }
         moves->free_memory();
         return best;
@@ -189,6 +193,10 @@ int Minimax(int initialPlayer,int** board,int m,int n,int k,int player){
                 worst=score;
             }
             board[y][x]=EMPTY;
+            if(worst==-1){
+                return -1;
+            }
+
         }
         moves->free_memory();
         return worst;
@@ -210,7 +218,8 @@ bool isFull(int ** board,int m,int n){
     return true;
 }
 
-List* generateAllMoves(int ** board,int m,int n,int p){
+List* generateAllMoves(int ** board,int m,int n,int p,int k,bool cut){
+
     List* moves=new List;
     for (int i = 0; i < m; ++i) {
         for (int j = 0; j < n; ++j) {
@@ -218,6 +227,16 @@ List* generateAllMoves(int ** board,int m,int n,int p){
                 Position_t move{};
                 move.y=i;
                 move.x=j;
+                if(cut){
+                    board[move.y][move.x]=p;
+                    if(whoWon(board,m,n,k)!=0){
+                        List* Fmove=new List;
+                        Fmove->addLast(move);
+                        return Fmove;
+                    }
+                    board[move.y][move.x]=EMPTY;
+                }
+
                 moves->addLast(move);
             }
         }

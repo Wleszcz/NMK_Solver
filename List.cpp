@@ -74,7 +74,7 @@ void List::free_memory() {
             head = head->next;
             delete tmp;
         }
-        tail=NULL;
+
 }
 
 int List::size(){
